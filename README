@@ -1,11 +1,13 @@
-MC GoogleMap (mc_gmap) is an admin script for use with Pigmap (map renderer for Minecraft, see https://github.com/equalpants/pigmap).
-Originally it was created to suit the needs of the administrator of the server where I play but I decided to make it public. Maybe it will
+MC GoogleMap (mc_gmap) is an admin script for use with Pigmap (map renderer for Minecraft, 
+see https://github.com/equalpants/pigmap). Originally it was created to suit the needs of
+the administrator of the server where I play but I decided to make it public. Maybe it will
 be useful.
 
 It is all free, under GPL license (see COPYING). Please feel free to fork/modify/whatever.
 
-But please keep in mind that, even if I take a look at suggestions made in Issues tab, I only develops this script
-according to my administrator's needs. So may be I will add your idea, may be not :-) (but again, it is GPL so...).
+But please keep in mind that, even if I take a look at suggestions made in Issues tab, I
+only develops this script according to my administrator's needs. So may be I will add your
+idea, may be not :-) (but again, it is GPL so...).
 
 ------
 
@@ -14,7 +16,8 @@ Current fonctionalities:
 - Full or incremental render with Pigmap
 - JPG support for faster webmap loading (require ImageMagick package)
 - Players's homes printing on webmap (require Essentials for Bukkit)
-- Easy to use: just configure one time and then only call the script with "start" arg (you can then make beautiful cron job)
+- Easy to use: just configure one time and then only call the script with "start" arg (you 
+can then make beautiful cron job)
 
 Planned fonctionalities:
 
@@ -22,8 +25,8 @@ Planned fonctionalities:
 - Add "force_jpg" and "force_full_render" option for command line
 - Make config file independant so you not have to rewrite it each time this script is updated
 - Better MultiVerse support (instead of copying this script for each map)
-- Show realtime players's pos on webmap (this will be in two parts: one in this script to render on webmap and another
-who will be a Bukkit plugin that gather players pos)
+- Show realtime players's pos on webmap (this will be in two parts: one in this script to 
+render on webmap and another who will be a Bukkit plugin that gather players pos)
 - Logging function?
 - Make a nice interface for the webmap!
 
@@ -31,14 +34,17 @@ who will be a Bukkit plugin that gather players pos)
 
 INSTALLATION
 
-It is a *NIX script, sorry for Windows guys. It was only tested on the server where I used to play, a Debian 6 Squeeze 64bits
-and my personal dev box (Debian too, of course!). This is a bash script so it will run fine in any other distro I think.
+It is a *NIX script, sorry for Windows guys. It was only tested on the server where I used to play, 
+a Debian 6 Squeeze 64bits and my personal dev box (Debian too, of course!). This is a bash script so 
+it will run fine in any other distro I think.
 
 Prerequisites:
 
-- To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so ("aptitude install build-essentials libpng12-dev" for Debian)
+- To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so 
+("aptitude install build-essentials libpng12-dev" for Debian)
 - For PNG to JPG convert, ImageMagick is required ("aptitude install imagemagick" for Debian)
-- For Players's Homes support on webmap, you have to use Essentials plugin for Bukkit (I do not provide any support for that)
+- For Players's Homes support on webmap, you have to use Essentials plugin for Bukkit (I do not provide 
+any support for that)
 
 Compiling pigmap:
 
@@ -58,8 +64,8 @@ CREDITS
 
 Pigmap is developed by Michael J. "equalpants" Nelson (https://github.com/equalpants/pigmap)
 
-The files template.html and style.css came from equalpants and Minecraft Overviewer (copryright Andrew Brown and contributors) but were also
-modified by me.
+The files template.html and style.css came from equalpants and Minecraft Overviewer (copryright Andrew Brown 
+and contributors) but were also modified by me.
 
 Code for PNG to JPG based on packetcollision's code (https://github.com/equalpants/pigmap/issues/3).
 
