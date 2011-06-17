@@ -22,7 +22,7 @@ can then make beautiful cron job)
 Planned fonctionalities:
 
 - Code optimization (some parts looks crap I know)
-- Add "force_jpg" and "force_full_render" option for command line
+- Add "force-jpg" and "force-full-render" option for command line
 - Make config file independant so you not have to rewrite it each time this script is updated
 - Better MultiVerse support (instead of copying this script for each map)
 - Show realtime players's pos on webmap (this will be in two parts: one in this script to 
@@ -48,7 +48,8 @@ any support for that)
 
 Compiling pigmap:
 
-Untar archive, go to pigmap folder and type "make", it will take only few seconds if you have all prerequisites.
+Untar archive, go to pigmap folder and type "make", it will take only few seconds if you have all 
+prerequisites.
 
 Using the script:
 
