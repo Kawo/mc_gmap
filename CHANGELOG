@@ -1,0 +1,45 @@
+1.4
+
+* Code cleaned for first public release on github
+
+
+1.3.7 (06/15/2011)
+
++ Faster webmap loading: autoconvert PNG to JPG (thanks to packetcollision's snippet) (require ImageMagick)
++ Faster map render: using builtin pigmap's incremental render (thanks to tdebarochez for regionslist script generation)
+
+
+1.3.6 (06/15/2011)
+
++ Updated pigmap for Minecraft 1.6.x
+
+
+1.3.5 (02/28/2011)
+
+* Fixed coords recorded multiple times
+
+
+1.3.4 (02/28/2011)
+
+* Homes's code modified according to Essentials's new save format
+
+
+1.3.3 (02/28/2011)
+
++ Pigmap updated to support new save format of Minecraft 1.3
+
+
+1.3.2 (02/16/2011)
+
+* Rollback to dynamic zoom
+
+
+1.3.1 (02/14/2011)
+
+* Temporary fix for corrupted world (baseZoom forced to 9 instead of being dynamic)
+
+
+1.3 (02/10/2011)
+
++ Homes are now printed on webmap (require Essentials plugin for Bukkit)
+* Code optimization
