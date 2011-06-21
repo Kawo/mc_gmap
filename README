@@ -11,6 +11,22 @@ idea, may be not :-) (but again, it is GPL so...).
 
 For full install instructions, read https://github.com/kawo/mc_gmap/wiki/Full-Install-Instructions
 
+
+------
+
+Project News
+
+
+(06/21/2011)
+
++ added v1.5-dev branch (this is WIP, do not use in prod atm)
+
+
+(06/18/2011)
+
++ 1.4 released on GitHub
+
+
 ------
 
 Current fonctionalities:
@@ -21,45 +37,18 @@ Current fonctionalities:
 - Easy to use: just configure one time and then only call the script with "start" arg (you 
 can then make beautiful cron job)
 
+
 Planned fonctionalities:
 
-- Code optimization (some parts looks crap I know)
-- Add "force-jpg" and "force-full-render" option for command line
-- Make config file independant so you not have to rewrite it each time this script is updated
-- Better MultiVerse support (instead of copying this script for each map)
+- Code optimization (some parts looks crap I know) (wip in v1.5-dev)
+- Add "force-jpg" and "force-full-render" option for command line (wip in v1.5-dev)
+- Make config file independant so you not have to rewrite it each time this script is updated (wip in v1.5-dev)
+- Better MultiVerse support (instead of copying this script for each map) (wip in v1.5-dev)
 - Show realtime players's pos on webmap (this will be in two parts: one in this script to 
 render on webmap and another who will be a Bukkit plugin that gather players pos)
 - Logging function?
 - Make a nice interface for the webmap!
 
-------
-
-INSTALLATION
-
-It is a *NIX script, sorry for Windows guys. It was only tested on the server where I used to play, 
-a Debian 6 Squeeze 64bits and my personal dev box (Debian too, of course!). This is a bash script so 
-it will run fine in any other distro I think.
-
-Prerequisites:
-
-- To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so 
-("aptitude install build-essentials libpng12-dev" for Debian)
-- For PNG to JPG convert, ImageMagick is required ("aptitude install imagemagick" for Debian)
-- For Players's Homes support on webmap, you have to use Essentials plugin for Bukkit (I do not provide 
-any support for that)
-
-Compiling pigmap:
-
-Untar archive, go to pigmap folder and type "make", it will take only few seconds if you have all 
-prerequisites.
-
-Using the script:
-
-Just edit top of the mc_gmap.sh file (config part) and call the script with:
-
-bash mc_gmap.sh
-
-It will show you commands that are availables.
 
 ------
 
