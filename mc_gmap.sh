@@ -19,19 +19,9 @@
 ##
 #
 
-
 #
-# CONFIG START HERE
-#
-WORLD_PATH=/path/to/minecraft/world          # path to the world folder
-WEB_PATH=/path/to/web/folder                 # path where the map will be rendered
-THREAD_NUMBER=1                              # number of threads to use while generating map (usually 1 thread per cpu core)
-WEB_USER=www-data                            # user that can serve web files
-WEB_GROUP=www-data                           # group that can serve web files
-HOMES_DIR=/path/to/folder/with/players/homes # path to where Essentials store players's homes
-SERVER_ADMIN=                                # the MINECRAFT ACCOUNT of the server's admin (just if you plan to show players's homes on map)
-#
-# CONFIG END HERE
+# CONFIG IS NOW IN SEPARATE FILE
+# see mc_gmap.conf
 #
 
 #
@@ -55,6 +45,9 @@ DARKBLUECOLOR="\033[1;34m"
 LILACOLOR="\033[1;35m"
 REDCOLOR="\033[1;31m"
 GREENCOLOR="\033[1;32m"
+
+# Loading config file
+source $MC_GMAP_PATH/mc_gmap.conf
 
 #
 # Function to check config
