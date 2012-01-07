@@ -5,16 +5,18 @@ be useful.
 
 It is all free, under GPL license (see COPYING). Please feel free to fork/modify/whatever.
 
-But please keep in mind that, even if I take a look at suggestions made in Issues tab, I
-only develops this script according to my administrator's needs. So may be I will add your
-idea, may be not :-) (but again, it is GPL so...).
-
 For full install instructions, read https://github.com/kawo/mc_gmap/wiki/Full-Install-Instructions
 
 
 ------
 
 Project News
+
+
+(01/07/2012)
+
+1.4.1 released
++ Pigmap updated to support Minecraft 1.0 blocks
 
 
 (06/21/2011)
