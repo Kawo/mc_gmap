@@ -23,7 +23,7 @@
 #
 # CONFIG START HERE
 #
-MC_GMAP_PATH=/path/to/mc_gmap-1.4            # path to this script
+MC_GMAP_PATH=/path/to/mc_gmap-1.4.1          # path to this script
 WORLD_PATH=/path/to/minecraft/world          # path to the world folder
 WEB_PATH=/path/to/web/folder                 # path where the map will be rendered
 THREAD_NUMBER=1                              # number of threads to use while generating map (usually 1 thread per cpu core)
@@ -45,7 +45,7 @@ SERVER_ADMIN=                                # the MINECRAFT ACCOUNT of the serv
 #
 PIGMAP_B=6
 PIGMAP_T=1
-MC_GMAP_VERSION=1.4
+MC_GMAP_VERSION=1.4.1
 PIGMAP_EXEC=""
 ME=`whoami`
 MC_GMAP_ERROR=0
