@@ -10,7 +10,17 @@ For full install instructions, read https://github.com/kawo/mc_gmap/wiki/Full-In
 
 ------
 
+
 Project News
+
+
+(01/09/2012)
+
+1.5beta1 released
+(see Tags or change current branch)
++ Multi maps support: config files are now independents
++ Code optimization
+* Homes generation temporary disabled
 
 
 (01/07/2012)
@@ -31,7 +41,8 @@ Project News
 
 ------
 
-Current fonctionalities:
+
+Current functionalities:
 
 - Full or incremental render with Pigmap
 - JPG support for faster webmap loading (require ImageMagick package)
@@ -40,11 +51,11 @@ Current fonctionalities:
 can then make beautiful cron job)
 
 
-Planned fonctionalities:
+Planned functionalities:
 
 - Code optimization (some parts looks crap I know) (wip in v1.5-dev)
 - Add "force-jpg" and "force-full-render" option for command line (wip in v1.5-dev)
-- Make config file independant so you not have to rewrite it each time this script is updated (wip in v1.5-dev)
+- Make config file independent so you not have to rewrite it each time this script is updated (wip in v1.5-dev)
 - Better MultiVerse support (instead of copying this script for each map) (wip in v1.5-dev)
 - Show realtime players's pos on webmap (this will be in two parts: one in this script to 
 render on webmap and another who will be a Bukkit plugin that gather players pos)
@@ -53,6 +64,7 @@ render on webmap and another who will be a Bukkit plugin that gather players pos
 
 
 ------
+
 
 CREDITS
 
