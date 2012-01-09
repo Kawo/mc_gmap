@@ -1,3 +1,17 @@
+1.5beta1 (01/09/2012)
+
++ Pigmap updated to support Minecraft 1.0.blocks
++ Config files are now independent
++ Now you can render multiple maps without copying whole script: just have a config file for each map you want to render
++ Code optimization
+* Homes generation temporary disabled for beta1
+
+
+1.4.1 (01/07/2012)
+
++ Pigmap updated to support Minecraft 1.0 blocks
+
+
 1.4 (06/18/2011)
 
 * Code cleaned for first public release on github
