@@ -5,36 +5,34 @@ be useful.
 
 It is all free, under GPL license (see COPYING). Please feel free to fork/modify/whatever.
 
-But please keep in mind that, even if I take a look at suggestions made in Issues tab, I
-only develops this script according to my administrator's needs. So may be I will add your
-idea, may be not :-) (but again, it is GPL so...).
-
 For full install instructions, read https://github.com/kawo/mc_gmap/wiki/Full-Install-Instructions
+
 
 ------
 
-Current fonctionalities:
+
+Current functionalities for 1.5beta1:
 
 - Full or incremental render with Pigmap
 - JPG support for faster webmap loading (require ImageMagick package)
-- Players's homes printing on webmap (require Essentials for Bukkit)
-- Easy to use: just configure one time and then only call the script with "start" arg (you 
-can then make beautiful cron job)
+- Multi maps support (config files are independents)
+- Very flexible: you can control each map or whole at once, as you want
 
-Planned fonctionalities:
+Note: homes generation is temporary disabled for beta1.
 
-- Code optimization (some parts looks crap I know)
+
+Planned functionalities (not necessarily for final 1.5) :
+
+- More code optimization
 - Add "force-jpg" and "force-full-render" option for command line
-- Make config file independant so you not have to rewrite it each time this script is updated
-- Better MultiVerse support (instead of copying this script for each map)
-- Show realtime players's pos on webmap (this will be in two parts: one in this script to 
-render on webmap and another who will be a Bukkit plugin that gather players pos)
-- Logging function?
+- Show realtime players's pos on webmap
 - Make a nice interface for the webmap!
+
 
 ------
 
-INSTALLATION
+
+QUICK INSTALLATION GUIDE
 
 It is a *NIX script, sorry for Windows guys. It was only tested on the server where I used to play, 
 a Debian 6 Squeeze 64bits and my personal dev box (Debian too, of course!). This is a bash script so 
@@ -43,10 +41,8 @@ it will run fine in any other distro I think.
 Prerequisites:
 
 - To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so 
-("aptitude install build-essentials libpng12-dev" for Debian)
-- For PNG to JPG convert, ImageMagick is required ("aptitude install imagemagick" for Debian)
-- For Players's Homes support on webmap, you have to use Essentials plugin for Bukkit (I do not provide 
-any support for that)
+("aptitude install build-essential libpng12-dev" for Debian-like)
+- For PNG to JPG convert, ImageMagick is required ("aptitude install imagemagick" for Debian-like)
 
 Compiling pigmap:
 
@@ -55,13 +51,12 @@ prerequisites.
 
 Using the script:
 
-Just edit top of the mc_gmap.sh file (config part) and call the script with:
+1. Create a config file for each map using example.conf in conf directory.
+2. Launch the script: bash mc_gmap.sh to show commands that are available.
 
-bash mc_gmap.sh
-
-It will show you commands that are availables.
 
 ------
+
 
 CREDITS
 
