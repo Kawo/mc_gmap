@@ -21,7 +21,7 @@
 
 #
 # CONFIG IS NOW IN SEPARATE FILE
-# see mc_gmap.conf
+# see conf directory
 #
 
 #
@@ -33,9 +33,7 @@
 # Global variables
 #
 MC_GMAP_PATH="$(cd "$(dirname "$0")" && pwd)"
-PIGMAP_B=6
-PIGMAP_T=1
-MC_GMAP_VERSION=1.5
+MC_GMAP_VERSION=1.5beta1
 PIGMAP_EXEC=""
 ME=`whoami`
 MC_GMAP_ERROR=0
@@ -46,153 +44,317 @@ LILACOLOR="\033[1;35m"
 REDCOLOR="\033[1;31m"
 GREENCOLOR="\033[1;32m"
 
-# Loading config file
-source $MC_GMAP_PATH/mc_gmap.conf
-
 #
-# Function to check config
+# Main function to check config
 #
 checkConfig ()  {
+	
 	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n"
-	# Check if this script path is correct
-	if [ -f $MC_GMAP_PATH/pigmap/pigmap ]
+	
+	# Checking if pigmap is compiled
+	echo -e "Checking if pigmap is compiled..."
+	if [ -x $MC_GMAP_PATH/pigmap/pigmap ]
 		then
-			echo -e "> Path to this script: ${GREENCOLOR}OK${COLOROFF}"
+			echo -e "${GREENCOLOR}OK${COLOROFF}"
 			PIGMAP_EXEC="$MC_GMAP_PATH/pigmap/pigmap"
 		else
-			echo -e "> Path to this script: ${REDCOLOR}ERROR\nI can not find pigmap in ($MC_GMAP_PATH/pigmap)!\nWrong path or you have not compiled pigmap?${COLOROFF}"
+			echo -e "${REDCOLOR}ERROR\nI can not find pigmap executable in ($MC_GMAP_PATH/pigmap)!\nHave you compiled it? (see installation instructions)${COLOROFF}"
 			MC_GMAP_ERROR=1
 	fi
-	# Check if world path is correct
-	if [ -f $WORLD_PATH/level.dat ]
-        	then
-	                echo -e "> Path to Minecraft world: ${GREENCOLOR}OK${COLOROFF}"
-        	else
-                	echo -e "> Path to Minecraft world: ${REDCOLOR}ERROR\nPath to Minecraft world is wrong ($WORLD_PATH)!${COLOROFF}"
-	                MC_GMAP_ERROR=1
-	fi
-	# Check if web path is correct (if not, it will try to create one with provided informations)
-	if [ -d $WEB_PATH ]
+	
+	# Checking if Minecraft textures are availables
+	echo -e "Checking if Minecraft textures file (terrain.png) is available..."
+	if [ -f $MC_GMAP_PATH/pigmap/terrain.png ]
 		then
-			echo -e "> Path to the web folder: ${GREENCOLOR}OK${COLOROFF}"
+			echo -e "${GREENCOLOR}OK${COLOROFF}"
 		else
-			echo -e "${LILACOLOR}Path to the web folder does not exist. Trying to create $WEB_PATH...${COLOROFF}"
-			mkdir -p $WEB_PATH
-			if [ $? -eq 0 ]
+			echo -e "${REDCOLOR}ERROR\nTextures file terrain.png is not here! Please provide one in $MC_GMAP_PATH/pigmap${COLOROFF}"
+			MC_GMAP_ERROR=1
+	fi
+	
+	# Checking if a map argument was given
+	if [ -n "$1" ]
+		then
+			# If yes, checking if map conf file provided exists
+			echo -e "Checking if config file for [$1] map exists..."
+			if [ -f $MC_GMAP_PATH/conf/$1.conf ]
 				then
-					echo -e "${GREENCOLOR}OK${COLOROFF}"
+					# If yes, we import the conf file directly
+					echo -e "${GREENCOLOR}OK${COLOROFF}\n\nParsing [$1] config..."
+					source $MC_GMAP_PATH/conf/$1.conf
+					checkWorldPath "$WORLD_PATH"
+					checkWebPath "$WEB_PATH"
 				else
-					echo -e "${REDCOLOR}ERROR! Can not create ($WEB_PATH)! Wrong permissions?${COLOROFF}"
+					# If not, return error.
+					echo -e "${REDCOLOR}ERROR\n$MC_GMAP_PATH/conf/$1.conf does not exist!${COLOROFF}"
 					MC_GMAP_ERROR=1
 			fi
+		else
+			# If no argument was given, we loop through conf directory to check all maps
+			echo -e "\nNo map name provided. Processing through whole conf directory…"
+			cd $MC_GMAP_PATH/conf
+			shopt -s nullglob
+			for file in *.conf
+				do
+					if [ -s $file ]
+						then
+							if [ ${file%.*} != "example" ]
+								then
+									echo -e "\nParsing [${file%.*}] config…"
+									source $file
+									checkWorldPath "$WORLD_PATH"
+									checkWebPath "$WEB_PATH"
+							fi
+					fi
+			done
 	fi
-	# Check if Minecraft textures are availables
-	if [ -f $MC_GMAP_PATH/pigmap/terrain.png ]
-                then
-                        echo -e "> Textures file terrain.png is available: ${GREENCOLOR}OK${COLOROFF}\n"
-                else
-                        echo -e "> Textures file terrain.png is available: ${REDCOLOR}ERROR\nTextures file terrain.png is not here! Please provide one in $MC_GMAP_PATH/pigmap${COLOROFF}"
-			MC_GMAP_ERROR=1
-        fi
-	# If it trigger a fatal error to process map, exit this script
+	
+	# On fatal error, we stop this script
 	if [ $MC_GMAP_ERROR != 0 ]
 		then
-			echo -e ""
+			echo -e "\n${REDCOLOR}Please fix above error(s) before continuing.${COLOROFF}\n"
 			exit 1
+		else
+			echo -e "\n${GREENCOLOR}All settings are OK!${COLOROFF}\n"
+	fi
+
+}
+
+#
+# Function to check world path
+#
+checkWorldPath () {
+	# First, we check if world path was provided. If not, return error.
+	# If yes, we check if the path is valid.
+	if [ -z "$1" ]
+		then
+			echo -e "- Path to Minecraft world: ${REDCOLOR}ERROR\nNo path for minecraft world specified!${COLOROFF}"
+	        MC_GMAP_ERROR=1
+	    else
+			if [ -f $1/level.dat ]
+        		then
+	                echo -e "- Path to Minecraft world: ${GREENCOLOR}OK${COLOROFF}"
+        		else
+                	echo -e "- Path to Minecraft world: ${REDCOLOR}ERROR\nPath to Minecraft world is wrong ($1)!${COLOROFF}"
+	                MC_GMAP_ERROR=1
+			fi
 	fi
 }
 
 #
-# Building command line and execute it
+# Function to check web folder
 #
-buildCmd () {
-	# Check config first
-	checkConfig
-	# Check if we do a full or incremental render by checking if a map is already generated by looking for pigmap.params file
-	# If present, assuming that we can do incremental render safely by generating a list of modified regions
-	# (original regions list code snippet from tdebarochez (https://gist.github.com/922978))
-	if [ -f $WEB_PATH/pigmap.params ]
+checkWebPath () {
+
+	# Checking if web path exists and is correct (if not, it will try to create one with provided informations)
+	if [ -z "$1" ]
 		then
-			echo -e "\nBuilding list of modified regions..."
-			find $WORLD_PATH/region/ -newer $WEB_PATH/pigmap.params > $WEB_PATH/regionslist.txt
-			echo -e "${GREENCOLOR}OK${COLOROFF}"
-			echo -e "\nStarting incremental render...\n"
-			# Just a little check if THREAD_NUMBER was provided to no broke command line
-			if [ "$THREAD_NUMBER" != "" ]
-				then
-					CMD="$PIGMAP_EXEC -h $THREAD_NUMBER -i $WORLD_PATH -o $WEB_PATH -r $WEB_PATH/regionslist.txt -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap -x"
-				else
-					CMD="$PIGMAP_EXEC -h 1 -i $WORLD_PATH -o $WEB_PATH -r $WEB_PATH/regionslist.txt -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap -x"
-			fi
+			echo -e "- Path to the web folder: ${REDCOLOR}ERROR\nNo web folder specified!${COLOROFF}"
+			MC_GMAP_ERROR=1
 		else
-			echo -e "\nStarting full render...\n"
-			if [ "$THREAD_NUMBER" != "" ]
-                                then
-                                        CMD="$PIGMAP_EXEC -h $THREAD_NUMBER -i $WORLD_PATH -o $WEB_PATH -B $PIGMAP_B -T $PIGMAP_T -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap"
-                                else
-                                        CMD="$PIGMAP_EXEC -h 1 -i $WORLD_PATH -o $WEB_PATH -B $PIGMAP_B -T $PIGMAP_T -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap"
-                        fi
-		fi
-	# Executing command line
-	$CMD
+			if [ -d $WEB_PATH ]
+				then
+					echo -e "- Path to the web folder: ${GREENCOLOR}OK${COLOROFF}"
+				else
+					echo -e "- Path to the web folder: ${LILACOLOR}path to the web folder does not exist. Trying to create $WEB_PATH...${COLOROFF}"
+					mkdir -p $WEB_PATH >/dev/null 2>&1
+					if [ $? -eq 0 ]
+						then
+							echo -e "${GREENCOLOR}OK${COLOROFF}"
+						else
+							echo -e "${REDCOLOR}ERROR! Can not create $WEB_PATH! Wrong permissions?${COLOROFF}"
+							MC_GMAP_ERROR=1
+					fi
+			fi
+	fi
+}
+
+#
+# Function to build command line for incremental render
+#
+buildCmdInc () {
+
+	if [ -n "$3" ]
+		then
+			CMD="$PIGMAP_EXEC -h $3 -i $1 -o $2 -r $2/regionslist.txt -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap -x"
+		else
+			CMD="$PIGMAP_EXEC -h 1 -i $1 -o $2 -r $2/regionslist.txt -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap -x"
+	fi
+
+}
+
+#
+# Function to build command line for full render
+#
+buildCmdFull () {
+
+	if [ -n "$5" ]
+		then
+			CMD="$PIGMAP_EXEC -h $5 -i $1 -o $2 -B $3 -T $4 -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap"
+		else
+			CMD="$PIGMAP_EXEC -h 1 -i $1 -o $2 -B $3 -T $4 -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap"
+	fi
+
+}
+
+#
+# Function to convert PNG to JPG
+#
+pngToJpg () {
+
+	# First we check if ImageMagick is installed by trying to hash mogrify (an executable from IM)
+	# If it's OK, we convert images, if not, just a warning to tell user to install ImageMagick for next time
+	# (original png to jpg code snippet from packetcollision (https://github.com/packetcollision))
+	echo -e "\nTrying to convert PNG to JPG..."
+	hash mogrify >/dev/null 2>&1
 	if [ $? -eq 0 ]
-     		then
-			# If command line successfull, we try to convert PNG to JPG
-			# First we check if ImageMagick is installed by trying to hash mogrify (an executable from IM)
-			# If it's OK, we convert images, if not, just a warning to tell user to install ImageMagick for next time
-			# (original png to jpg code snippet from packetcollision (https://github.com/packetcollision))
-			echo -e "\nConverting PNG to JPG..."
-			hash mogrify >/dev/null 2>&1
+		then
+			if [ -f $1/lastupdate ]
+				then
+					find $1 -name \*.png -a -newer $1/lastupdate -print0 | xargs -0 mogrify -format jpg -background \#E5E3DF -flatten
+					touch $1/lastupdate
+					echo -e "${GREENCOLOR}OK${COLOROFF}"
+				else
+					find $1 -name \*.png -print0 | xargs -0 mogrify -format jpg -background \#E5E3DF -flatten
+					touch $1/lastupdate
+					echo -e "${GREENCOLOR}OK${COLOROFF}"
+			fi
+			# Dont forget to change 'png' to 'jpg' and vice versa in pigmap-default.html!
+			sed -i 's/'png'/'jpg'/g' $1/pigmap-default.html
+		else
+			echo -e "${LILACOLOR}Warning! You have to install ImageMagick package for that ("aptitude install imagemagick" for debian-like)${COLOROFF}"
+			sed -i 's/'jpg'/'png'/g' $1/pigmap-default.html
+	fi
+	
+}
+
+#
+# Function to finalize the render
+#
+finalizeRender () {
+
+	# If user calling this script is root, we can change web folder permissions
+	# to match thus provided in config part
+	if [ "$ME" != "root" ]
+		then
+			echo -e "\nGenerating index.html..."
+			cp -f $1/pigmap-default.html $1/index.html >/dev/null 2>&1
 			if [ $? -eq 0 ]
 				then
-					 if [ -f $WEB_PATH/lastupdate ]
-                               			then
-		                                        find $WEB_PATH -name \*.png -a -newer $WEB_PATH/lastupdate -print0 | xargs -0 mogrify -format jpg -background \#E5E3DF -flatten
-                		                        touch $WEB_PATH/lastupdate
-                                		        echo -e "${GREENCOLOR}OK${COLOROFF}"
-		                                else
-                		                        find $WEB_PATH -name \*.png -print0 | xargs -0 mogrify -format jpg -background \#E5E3DF -flatten
-                                		        touch $WEB_PATH/lastupdate
-		                                        echo -e "${GREENCOLOR}OK${COLOROFF}"
-                		        fi
-					# Dont forget to change 'png' to 'jpg' and vice versa in pigmap-default.html!
-					sed -i 's/'png'/'jpg'/g' $WEB_PATH/pigmap-default.html
+					echo -e "${GREENCOLOR}OK!\n\nMap generation for [$4] is over! Dont forget to check your web folder permissions if you have 403 error.${COLOROFF}\n"
 				else
-					echo -e "${LILACOLOR}Warning! You have to install ImageMagick package for that ("aptitude install imagemagick" for debian)${COLOROFF}"
-					sed -i 's/'jpg'/'png'/g' $WEB_PATH/pigmap-default.html
-			fi
-			# If user calling this script is root, we can change web folder permissions
-			# to match thus provided in config part
-			if [ "$ME" != "root" ]
-				then
-					echo -e "\nGenerating index.html..."
-					cp -f $WEB_PATH/pigmap-default.html $WEB_PATH/index.html
-					if [ $? -eq 0 ]
-						then
-		                		        echo -e "${GREENCOLOR}OK!\n\nMap generation is over! Dont forget to check your web folder permissions if you have 403 error.${COLOROFF}\n"
-						else
-							echo -e "${REDCOLOR}ERROR!\nCan not create index.html! You have to do it youself by copying pigmap-default.html to index.html${COLOROFF}"
-					fi
-				else
-					echo -e "\nGenerating index.html..."
-                                        cp -f $WEB_PATH/pigmap-default.html $WEB_PATH/index.html
-					if [ $? -eq 0 ]
-						then
-							echo -e "${GREENCOLOR}OK!${COLOROFF}\nSetting permissions for web folder..."
-							chown -R $WEB_USER:$WEB_GROUP $WEB_PATH
-							if [ $? -eq 0 ]
-								then
-									echo -e "${GREENCOLOR}OK!\n\nMap generation is over!${COLOROFF}\n"
-								else
-									echo -e "${REDCOLOR}ERROR!\nCan not change web folder permissions ($WEB_PATH)! You have to do it yourself if you have 403 error.${COLOROFF}\n"
-							fi
-						else
-							echo -e "${REDCOLOR}ERROR!\nCan not create index.html! You have to do it youself by copying pigmap-default.html to index.html${COLOROFF}"
-					fi
+					echo -e "${REDCOLOR}ERROR!\nMap generation for [$4] is over but I can not create index.html! You have to do it youself by copying pigmap-default.html to index.html${COLOROFF}"
 			fi
 		else
-			echo -e "\n${REDCOLOR}Map generation totaly FAILED! (and I dont know why :'()${COLOROFF}"
+			echo -e "\nGenerating index.html..."
+			cp -f $1/pigmap-default.html $1/index.html >/dev/null 2>&1
+			if [ $? -eq 0 ]
+				then
+					echo -e "${GREENCOLOR}OK!${COLOROFF}\nSetting permissions for web folder..."
+					chown -R $2:$3 $1 >/dev/null 2>&1
+					if [ $? -eq 0 ]
+						then
+							echo -e "${GREENCOLOR}OK!\n\nMap generation for [$4] is over!${COLOROFF}\n"
+						else
+							echo -e "${LILACOLOR}WARNING!\nMap generation for [$4] is over but I can not change web folder permissions ($1)! You have to do it yourself if you have 403 error.${COLOROFF}\n"
+					fi
+				else
+					echo -e "${REDCOLOR}ERROR!\nMap generation for [$4] is over but I can not create index.html! You have to do it youself by copying pigmap-default.html to index.html${COLOROFF}"
+			fi
 	fi
+		
+}
+
+
+#
+# Main function to render maps
+#
+startRender () {
+
+	# Checking if a map argument was given then starting the process
+	if [ -n "$1" ]
+		then
+			checkConfig "$1"
+			source $MC_GMAP_PATH/conf/$1.conf
+			# Check if we do a full or incremental render by checking if a map is already generated by looking for pigmap.params file.
+			# If present, assuming that we can do incremental render safely by generating a list of modified regions
+			# (original regions list code snippet from tdebarochez (https://gist.github.com/922978))
+			if [ -f $WEB_PATH/pigmap.params ]
+				then
+					echo -e "\nBuilding list of modified regions for [$1] map..."
+					find $WORLD_PATH/region/ -newer $WEB_PATH/pigmap.params > $WEB_PATH/regionslist.txt
+					echo -e "${GREENCOLOR}OK${COLOROFF}"
+					echo -e "\nStarting incremental render for [$1] map...\n"
+					buildCmdInc "$WORLD_PATH" "$WEB_PATH" "$THREAD_NUMBER"
+					$CMD
+					# If command line successfull, we try to convert PNG to JPG
+					# then we finalize the render
+					if [ $? -eq 0 ]
+     					then
+     						pngToJpg "$WEB_PATH"
+     						finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "$1"
+     					else
+     						echo -e "\n${REDCOLOR}Map generation totaly FAILED! And I dont know why :'(${COLOROFF}"
+     				fi
+				else
+					echo -e "\nStarting full render for [$1] map...\n"
+					buildCmdFull "$WORLD_PATH" "$WEB_PATH" "$PIGMAP_PARAM_B" "$PIGMAP_PARAM_T" "$THREAD_NUMBER"
+					$CMD
+					if [ $? -eq 0 ]
+     					then
+     						pngToJpg "$WEB_PATH"
+     						finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "$1"
+     					else
+     						echo -e "\n${REDCOLOR}Map generation totaly FAILED! And I dont know why :'(${COLOROFF}"
+     				fi
+			fi
+
+		else
+			checkConfig
+			# If no argument was given, we loop through conf directory to render all maps
+			echo -e "No map name provided. Processing all maps..."
+			cd $MC_GMAP_PATH/conf
+			shopt -s nullglob
+			for file in *.conf
+				do
+					if [ -s $file ]
+						then
+							if [ ${file%.*} != "example" ]
+								then
+									echo -e "\nRendering [${file%.*}] map..."
+									source $file
+									if [ -f $WEB_PATH/pigmap.params ]
+										then
+											echo -e "\nBuilding list of modified regions for [${file%.*}] map..."
+											find $WORLD_PATH/region/ -newer $WEB_PATH/pigmap.params > $WEB_PATH/regionslist.txt
+											echo -e "${GREENCOLOR}OK${COLOROFF}"
+											echo -e "\nStarting incremental render for [${file%.*}] map...\n"
+											buildCmdInc "$WORLD_PATH" "$WEB_PATH" "$THREAD_NUMBER"
+											$CMD
+											if [ $? -eq 0 ]
+     											then
+     												pngToJpg "$WEB_PATH"
+     												finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "${file%.*}"
+     											else
+     												echo -e "\n${REDCOLOR}Map generation totaly FAILED! And I dont know why :'(${COLOROFF}"
+     										fi
+										else
+											echo -e "\nStarting full render for [${file%.*}] map...\n"
+											buildCmdFull "$WORLD_PATH" "$WEB_PATH" "$PIGMAP_PARAM_B" "$PIGMAP_PARAM_T" "$THREAD_NUMBER"
+											$CMD
+											if [ $? -eq 0 ]
+     											then
+     												pngToJpg "$WEB_PATH"
+     												finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "${file%.*}"
+     											else
+     												echo -e "\n${REDCOLOR}Map generation totaly FAILED! And I dont know why :'(${COLOROFF}"
+     										fi
+									fi
+							fi
+					fi
+			done
+	fi
+
 }
 
 #
@@ -201,7 +363,7 @@ buildCmd () {
 clean () {
 	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n"
 	echo -e "Cleaning textures..."
-	rm -rf $MC_GMAP_PATH/pigmap/blocks-*
+	rm -rf $MC_GMAP_PATH/pigmap/blocks-* >/dev/null 2>&1
 	if [ $? -eq 0 ]
 		then
 			echo -e "${GREENCOLOR}OK!${COLOROFF}\n"
@@ -209,6 +371,12 @@ clean () {
 			echo -e "${REDCOLOR}ERROR!\nCan not clean files $MC_GMAP_PATH/$GENERATOR_DIR/blocks-*!${COLOROFF}\n"
 			exit 1
 	fi
+}
+
+homesTmp () {
+
+	echo -e "Homes generation temporary disabled."
+
 }
 
 #
@@ -316,12 +484,22 @@ homes () {
 case "$1" in
 
 	start)
-	buildCmd
+	if [ -n "$2" ]
+		then
+			startRender "$2"
+		else
+			startRender
+	fi
 	exit 0
 	;;
 
 	check)
-	checkConfig
+	if [ -n "$2" ]
+		then
+			checkConfig "$2"
+		else
+			checkConfig
+	fi
 	exit 0
 	;;
 
@@ -331,12 +509,12 @@ case "$1" in
 	;;
 
 	homes)
-	homes
+	homesTmp
 	exit 0
 	;;
 
 	*)
-	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n\nHow to use: bash mc_gmap.sh {start|check|clean|homes}\n\nstart - generate map\ncheck - check config\nclean - clean pigmap's textures cache\nhomes - print players's homes on map\n"
+	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n\nHow to use: bash mc_gmap.sh [start|check|clean|homes] [map (optional)] \n\nstart - generate all maps (or the one specified)\ncheck - check all config files (or the one specified)\nclean - clean pigmap's textures cache\nhomes - print players's homes on all maps (or on the one specified)\n\nExamples:\nbash mc_gmap.sh check - will loop through conf directory to check all files\nbash mc_gmap.sh start myawesomemap - will render only the map specified in myawesomemap.conf\n"
 	exit 1
 	;;
 esac
