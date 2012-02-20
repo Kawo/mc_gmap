@@ -12,15 +12,24 @@ For full install instructions, read https://github.com/kawo/mc_gmap/wiki/Full-In
 
 Project News
 
+
+(02/20/2012)
+
+2.0-dev branch created. Coming back to Overviewer engine.
++ Working to adapt mc_gmap to Overviewer's features.
++ Working to adapt PlayerMarkers Addon to work with multimaps and without avatar.
+
+
 (02/20/2012)
 
 After one month of testing, 1.5-dev branch is now merged to master.
 Still little things to do for a "final" tag, but it is fully functional atm.
 
-Another news, 1.6 branch will be created soon. I will try to port mc_gmap to Overviewer engine...in fact, it
+Another news, 2.0-dev branch will be created soon. I will try to port mc_gmap to Overviewer engine...in fact, it
 was the first engine that this script has used back in november/december 2010, but as the world of my server expanded,
 it was to slow to render and pigmap was 400% faster.
 The "new" Overviewer seems kickass now : faster, smooth lighting, night lighting, very flexible.
+
 
 (01/09/2012)
 
