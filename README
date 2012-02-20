@@ -33,17 +33,17 @@ The "new" Overviewer seems kickass now : faster, smooth lighting, night lighting
 
 ------
 
-Current functionalities for 1.5:
+Current functionalities for 1.5beta1:
 
 - Full or incremental render with Pigmap
 - JPG support for faster webmap loading (require ImageMagick package)
 - Multi maps support (config files are independents)
 - Very flexible: you can control each map or whole at once, as you want
 
-Note: homes generation is temporary disabled.
+Note: homes generation is temporary disabled for beta1.
 
 
-Planned functionalities :
+Planned functionalities (not necessarily for final 1.5) :
 
 - More code optimization
 - Add "force-jpg" and "force-full-render" option for command line
@@ -54,7 +54,6 @@ Planned functionalities :
 ------
 
 QUICK INSTALLATION GUIDE
-
 
 - To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so 
 ("aptitude install build-essential libpng12-dev" for Debian-like)
