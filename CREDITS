@@ -2,13 +2,6 @@ CREDITS
 
 --------
 
-* Pigmap is developed by Michael J. "equalpants" Nelson (https://github.com/equalpants/pigmap)
+* Minecraft-Overviewer is developed by Andrew Brown (http://docs.overviewer.org/) and contributors (see https://github.com/overviewer/Minecraft-Overviewer/blob/master/CONTRIBUTORS.rst)
 
-* The files template.html and style.css came from equalpants and Minecraft Overviewer (copryright Andrew Brown 
-and contributors) but were also modified by me.
-
-* Code for PNG to JPG based on packetcollision's code (https://github.com/equalpants/pigmap/issues/3).
-
-* Code for regionslist generation based on tdebarochez's code (https://github.com/equalpants/pigmap/issues/21).
-
-* terrain.png is from original Minecraft game by Mojang.
+* Minecraft is developed by Mojang (http://www.minecraft.net/)

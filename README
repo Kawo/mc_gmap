@@ -1,26 +1,33 @@
-MC GoogleMap (mc_gmap) is an admin script for use with Pigmap (map renderer for Minecraft, 
-see https://github.com/equalpants/pigmap). Originally it was created to suit the needs of
+MC GoogleMap (mc_gmap) is an admin script for use with Minecraft Overviewer (map renderer for Minecraft, 
+see http://docs.overviewer.org). Originally it was created to suit the needs of
 the administrator of the server where I play but I decided to make it public. Maybe it will
 be useful.
 
 It is all free, under GPL license (see COPYING). Please feel free to fork/modify/whatever.
-
-For full install instructions, read https://github.com/kawo/mc_gmap/wiki/Full-Install-Instructions
 
 
 ------
 
 Project News
 
+
+(02/20/2012)
+
+2.0-dev branch created. Coming back to Overviewer engine.
++ Working to adapt mc_gmap to Overviewer's features.
++ Working to adapt PlayerMarkers Addon to work with multimaps and without avatar.
+
+
 (02/20/2012)
 
 After one month of testing, 1.5-dev branch is now merged to master.
 Still little things to do for a "final" tag, but it is fully functional atm.
 
-Another news, 1.6 branch will be created soon. I will try to port mc_gmap to Overviewer engine...in fact, it
+Another news, 2.0-dev branch will be created soon. I will try to port mc_gmap to Overviewer engine...in fact, it
 was the first engine that this script has used back in november/december 2010, but as the world of my server expanded,
 it was to slow to render and pigmap was 400% faster.
 The "new" Overviewer seems kickass now : faster, smooth lighting, night lighting, very flexible.
+
 
 (01/09/2012)
 
@@ -33,47 +40,28 @@ The "new" Overviewer seems kickass now : faster, smooth lighting, night lighting
 
 ------
 
-Current functionalities for 1.5beta1:
+Current functionalities for 2.0-dev branch:
 
-- Full or incremental render with Pigmap
-- JPG support for faster webmap loading (require ImageMagick package)
-- Multi maps support (config files are independents)
-- Very flexible: you can control each map or whole at once, as you want
-
-Note: homes generation is temporary disabled for beta1.
+- Multi-maps generation
+- You can config map orientation and render modes for each map
 
 
-Planned functionalities (not necessarily for final 1.5) :
+Planned functionalities:
 
-- More code optimization
-- Add "force-jpg" and "force-full-render" option for command line
-- Show realtime players's pos on webmap
-- Make a nice interface for the webmap!
+- Adapt PlayerMarkers addon to work without players's avatars
+- Adapt PlayerMarkers addon to support multimaps
 
 
 ------
 
 QUICK INSTALLATION GUIDE
 
-- To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so 
-("aptitude install build-essential libpng12-dev" for Debian-like)
-- For PNG to JPG convert, ImageMagick is required ("aptitude install imagemagick" for Debian-like)
-
-1. Create a config file for each map using example.conf in conf directory.
-2. Launch the script: bash mc_gmap.sh to show commands that are available.
 
 
 ------
 
 CREDITS
 
-Pigmap is developed by Michael J. "equalpants" Nelson (https://github.com/equalpants/pigmap)
+* Minecraft-Overviewer is developed by Andrew Brown (http://docs.overviewer.org/) and contributors (see https://github.com/overviewer/Minecraft-Overviewer/blob/master/CONTRIBUTORS.rst)
 
-The files template.html and style.css came from equalpants and Minecraft Overviewer (copryright Andrew Brown 
-and contributors) but were also modified by me.
-
-Code for PNG to JPG based on packetcollision's code (https://github.com/equalpants/pigmap/issues/3).
-
-Code for regionslist generation based on tdebarochez's code (https://github.com/equalpants/pigmap/issues/21).
-
-terrain.png is from original Minecraft game by Mojang.
+* Minecraft is developed by Mojang (http://www.minecraft.net/)

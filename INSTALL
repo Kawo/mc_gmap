@@ -1,7 +1,7 @@
 INSTALLATION
 ----------
 
-For full install instructions see https://github.com/kawo/mc_gmap/wiki/Full-Install-Instructions
+For full install instructions see http://docs.overviewer.org/
 
 --
 
@@ -9,23 +9,14 @@ It is a *NIX script, sorry for Windows guys. It was only tested on the server wh
 a Debian 6 Squeeze 64bits and my personal dev box (Debian too, of course!). This is a bash script so
 it will run fine in any other distro I think.
 
-Prerequisites:
+--
 
-- To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so
-("aptitude install build-essentials libpng12-dev" for Debian)
-- For PNG to JPG convert, ImageMagick is required ("aptitude install imagemagick" for Debian)
-- For Players's Homes support on webmap, you have to use Essentials plugin for Bukkit (I do not provide
-any support for that)
+Debian-like instructions
 
-Compiling pigmap:
+1. Add "deb http://overviewer.org/debian ./" to your /etc/apt/sources.list
+2. Then: "aptitude update && aptitude install minecraft-overviewer"
+3. Profit.
 
-Untar archive, go to pigmap folder and type "make", it will take only few seconds if you have all
-prerequisites.
+Other distros/sources compilation
 
-Using the script:
-
-Just edit top of the mc_gmap.sh file (config part) and call the script with:
-
-bash mc_gmap.sh
-
-It will show you commands that are availables.
+See Minecraft Overviewer doc http://docs.overviewer.org/en/latest/building/
