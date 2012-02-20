@@ -1,7 +1,9 @@
 #!/bin/bash
 #
+
 ##
-#   MC GoogleMap, an admin script to render Minecraft map with Pigmap
+#   MC GoogleMap, an admin script to render Minecraft map with Minecraft
+#	Overviewer.
 #   Copyright (C) 2011 Kevin "Kawo" Audebrand (kevin.audebrand@gmail.com)
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -32,9 +34,9 @@
 #
 # Global variables
 #
+OVERVIEWER_EXEC="/usr/bin/overviewer.py"
 MC_GMAP_PATH="$(cd "$(dirname "$0")" && pwd)"
-MC_GMAP_VERSION=1.5beta1
-PIGMAP_EXEC=""
+MC_GMAP_VERSION=2.0beta1
 ME=`whoami`
 MC_GMAP_ERROR=0
 COLOROFF="\033[1;0m"
@@ -51,25 +53,31 @@ checkConfig ()  {
 	
 	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n"
 	
-	# Checking if pigmap is compiled
-	echo -e "Checking if pigmap is compiled..."
-	if [ -x $MC_GMAP_PATH/pigmap/pigmap ]
+	# Checking if path to overviewer.py is valid
+	echo -e "Checking if path to overviewer is valid..."
+	if [ -x $OVERVIEWER_EXEC ]
 		then
 			echo -e "${GREENCOLOR}OK${COLOROFF}"
-			PIGMAP_EXEC="$MC_GMAP_PATH/pigmap/pigmap"
 		else
-			echo -e "${REDCOLOR}ERROR\nI can not find pigmap executable in ($MC_GMAP_PATH/pigmap)!\nHave you compiled it? (see installation instructions)${COLOROFF}"
+			echo -e "${REDCOLOR}ERROR\nI can not find overviewer.py ($OVERVIEWER_EXEC)!\nPlease provide a valid path if you have done a manual install${COLOROFF}"
 			MC_GMAP_ERROR=1
 	fi
 	
 	# Checking if Minecraft textures are availables
 	echo -e "Checking if Minecraft textures file (terrain.png) is available..."
-	if [ -f $MC_GMAP_PATH/pigmap/terrain.png ]
+	if [ -f  ~/.minecraft/bin/minecraft.jar ]
 		then
 			echo -e "${GREENCOLOR}OK${COLOROFF}"
 		else
-			echo -e "${REDCOLOR}ERROR\nTextures file terrain.png is not here! Please provide one in $MC_GMAP_PATH/pigmap${COLOROFF}"
-			MC_GMAP_ERROR=1
+			echo -e "${LILACOLOR}Textures file terrain.png not found! Trying to download latest official build of Minecraft client...${COLOROFF}"
+			wget -N http://s3.amazonaws.com/MinecraftDownload/minecraft.jar -P ~/.minecraft/bin/
+			if [ $? -eq 0 ]
+				then
+					echo -e "${GREENCOLOR}OK${COLOROFF}"
+				else
+					echo -e "${REDCOLOR}ERROR! I can not download minecraft.jar${COLOROFF}"
+					MC_GMAP_ERROR=1
+			fi
 	fi
 	
 	# Checking if a map argument was given
@@ -170,66 +178,27 @@ checkWebPath () {
 }
 
 #
-# Function to build command line for incremental render
+# Function to build command line
 #
-buildCmdInc () {
+buildCmd () {
+
+	CMD="$OVERVIEWER_EXEC $1 $2"
 
 	if [ -n "$3" ]
 		then
-			CMD="$PIGMAP_EXEC -h $3 -i $1 -o $2 -r $2/regionslist.txt -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap -x"
-		else
-			CMD="$PIGMAP_EXEC -h 1 -i $1 -o $2 -r $2/regionslist.txt -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap -x"
-	fi
-
-}
-
-#
-# Function to build command line for full render
-#
-buildCmdFull () {
-
-	if [ -n "$5" ]
-		then
-			CMD="$PIGMAP_EXEC -h $5 -i $1 -o $2 -B $3 -T $4 -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap"
-		else
-			CMD="$PIGMAP_EXEC -h 1 -i $1 -o $2 -B $3 -T $4 -g $MC_GMAP_PATH/pigmap -m $MC_GMAP_PATH/pigmap"
-	fi
-
-}
-
-#
-# Function to convert PNG to JPG
-#
-pngToJpg () {
-
-	# First we check if ImageMagick is installed by trying to hash mogrify (an executable from IM)
-	# If it's OK, we convert images, if not, just a warning to tell user to install ImageMagick for next time
-	# (original png to jpg code snippet from packetcollision (https://github.com/packetcollision))
-	echo -e "\nTrying to convert PNG to JPG..."
-	hash mogrify >/dev/null 2>&1
-	if [ $? -eq 0 ]
-		then
-			if [ -f $1/lastupdate ]
-				then
-					find $1 -name \*.png -a -newer $1/lastupdate -print0 | xargs -0 mogrify -format jpg -background \#E5E3DF -flatten
-					touch $1/lastupdate
-					echo -e "${GREENCOLOR}OK${COLOROFF}"
-				else
-					find $1 -name \*.png -print0 | xargs -0 mogrify -format jpg -background \#E5E3DF -flatten
-					touch $1/lastupdate
-					echo -e "${GREENCOLOR}OK${COLOROFF}"
-			fi
-			# Dont forget to change 'png' to 'jpg' and vice versa in pigmap-default.html!
-			sed -i 's/'png'/'jpg'/g' $1/pigmap-default.html
-		else
-			echo -e "${LILACOLOR}Warning! You have to install ImageMagick package for that ("aptitude install imagemagick" for debian-like)${COLOROFF}"
-			sed -i 's/'jpg'/'png'/g' $1/pigmap-default.html
+			CMD="$CMD --north-direction $3"
 	fi
 	
+	if [ -n "$4" ]
+		then
+			CMD="$CMD --rendermodes $4"
+	fi
 }
+
 
 #
 # Function to finalize the render
+# (futur hooks here for PlayerMarkers)
 #
 finalizeRender () {
 
@@ -237,32 +206,17 @@ finalizeRender () {
 	# to match thus provided in config part
 	if [ "$ME" != "root" ]
 		then
-			echo -e "\nGenerating index.html..."
-			cp -f $1/pigmap-default.html $1/index.html >/dev/null 2>&1
-			if [ $? -eq 0 ]
-				then
-					echo -e "${GREENCOLOR}OK!\n\nMap generation for [$4] is over! Dont forget to check your web folder permissions if you have 403 error.${COLOROFF}\n"
-				else
-					echo -e "${REDCOLOR}ERROR!\nMap generation for [$4] is over but I can not create index.html! You have to do it youself by copying pigmap-default.html to index.html${COLOROFF}"
-			fi
+			echo -e "${GREENCOLOR}OK!\n\nMap generation for [$4] is over! Dont forget to check your web folder permissions if you have 403 error.${COLOROFF}\n"
 		else
-			echo -e "\nGenerating index.html..."
-			cp -f $1/pigmap-default.html $1/index.html >/dev/null 2>&1
+			echo -e "${GREENCOLOR}OK!${COLOROFF}\nSetting permissions for web folder..."
+			chown -R $2:$3 $1 >/dev/null 2>&1
 			if [ $? -eq 0 ]
 				then
-					echo -e "${GREENCOLOR}OK!${COLOROFF}\nSetting permissions for web folder..."
-					chown -R $2:$3 $1 >/dev/null 2>&1
-					if [ $? -eq 0 ]
-						then
-							echo -e "${GREENCOLOR}OK!\n\nMap generation for [$4] is over!${COLOROFF}\n"
-						else
-							echo -e "${LILACOLOR}WARNING!\nMap generation for [$4] is over but I can not change web folder permissions ($1)! You have to do it yourself if you have 403 error.${COLOROFF}\n"
-					fi
+					echo -e "${GREENCOLOR}OK!\n\nMap generation for [$4] is over!${COLOROFF}\n"
 				else
-					echo -e "${REDCOLOR}ERROR!\nMap generation for [$4] is over but I can not create index.html! You have to do it youself by copying pigmap-default.html to index.html${COLOROFF}"
+					echo -e "${LILACOLOR}WARNING!\nMap generation for [$4] is over but I can not change web folder permissions ($1)! You have to do it yourself if you have 403 error.${COLOROFF}\n"
 			fi
-	fi
-		
+	fi	
 }
 
 
@@ -276,42 +230,17 @@ startRender () {
 		then
 			checkConfig "$1"
 			source $MC_GMAP_PATH/conf/$1.conf
-			# Check if we do a full or incremental render by checking if a map is already generated by looking for pigmap.params file.
-			# If present, assuming that we can do incremental render safely by generating a list of modified regions
-			# (original regions list code snippet from tdebarochez (https://gist.github.com/922978))
-			if [ -f $WEB_PATH/pigmap.params ]
+			buildCmd "$WORLD_PATH" "$WEB_PATH" "$NORTH_DIRECTION" "$RENDER_MODES"
+			$CMD
+			if [ $? -eq 0 ]
 				then
-					echo -e "\nBuilding list of modified regions for [$1] map..."
-					find $WORLD_PATH/region/ -newer $WEB_PATH/pigmap.params > $WEB_PATH/regionslist.txt
-					echo -e "${GREENCOLOR}OK${COLOROFF}"
-					echo -e "\nStarting incremental render for [$1] map...\n"
-					buildCmdInc "$WORLD_PATH" "$WEB_PATH" "$THREAD_NUMBER"
-					$CMD
-					# If command line successfull, we try to convert PNG to JPG
-					# then we finalize the render
-					if [ $? -eq 0 ]
-     					then
-     						pngToJpg "$WEB_PATH"
-     						finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "$1"
-     					else
-     						echo -e "\n${REDCOLOR}Map generation totaly FAILED! And I dont know why :'(${COLOROFF}"
-     				fi
+					finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "$1"
 				else
-					echo -e "\nStarting full render for [$1] map...\n"
-					buildCmdFull "$WORLD_PATH" "$WEB_PATH" "$PIGMAP_PARAM_B" "$PIGMAP_PARAM_T" "$THREAD_NUMBER"
-					$CMD
-					if [ $? -eq 0 ]
-     					then
-     						pngToJpg "$WEB_PATH"
-     						finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "$1"
-     					else
-     						echo -e "\n${REDCOLOR}Map generation totaly FAILED! And I dont know why :'(${COLOROFF}"
-     				fi
+					echo -e "${REDCOLOR}ERROR! Map generation for [$1] totaly fail! ${COLOROFF}"
 			fi
-
 		else
-			checkConfig
 			# If no argument was given, we loop through conf directory to render all maps
+			checkConfig
 			echo -e "No map name provided. Processing all maps..."
 			cd $MC_GMAP_PATH/conf
 			shopt -s nullglob
@@ -323,159 +252,19 @@ startRender () {
 								then
 									echo -e "\nRendering [${file%.*}] map..."
 									source $file
-									if [ -f $WEB_PATH/pigmap.params ]
+									buildCmd "$WORLD_PATH" "$WEB_PATH" "$NORTH_DIRECTION" "$RENDER_MODES"
+									$CMD
+									if [ $? -eq 0 ]
 										then
-											echo -e "\nBuilding list of modified regions for [${file%.*}] map..."
-											find $WORLD_PATH/region/ -newer $WEB_PATH/pigmap.params > $WEB_PATH/regionslist.txt
-											echo -e "${GREENCOLOR}OK${COLOROFF}"
-											echo -e "\nStarting incremental render for [${file%.*}] map...\n"
-											buildCmdInc "$WORLD_PATH" "$WEB_PATH" "$THREAD_NUMBER"
-											$CMD
-											if [ $? -eq 0 ]
-     											then
-     												pngToJpg "$WEB_PATH"
-     												finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "${file%.*}"
-     											else
-     												echo -e "\n${REDCOLOR}Map generation totaly FAILED! And I dont know why :'(${COLOROFF}"
-     										fi
+											finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "${file%.*}"
 										else
-											echo -e "\nStarting full render for [${file%.*}] map...\n"
-											buildCmdFull "$WORLD_PATH" "$WEB_PATH" "$PIGMAP_PARAM_B" "$PIGMAP_PARAM_T" "$THREAD_NUMBER"
-											$CMD
-											if [ $? -eq 0 ]
-     											then
-     												pngToJpg "$WEB_PATH"
-     												finalizeRender "$WEB_PATH" "$WEB_USER" "$WEB_GROUP" "${file%.*}"
-     											else
-     												echo -e "\n${REDCOLOR}Map generation totaly FAILED! And I dont know why :'(${COLOROFF}"
-     										fi
+											echo -e "${REDCOLOR}ERROR! Map generation for [${file%.*}] totaly fail! ${COLOROFF}"
 									fi
 							fi
 					fi
 			done
 	fi
 
-}
-
-#
-# Function to clean pigmap textures cache
-#
-clean () {
-	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n"
-	echo -e "Cleaning textures..."
-	rm -rf $MC_GMAP_PATH/pigmap/blocks-* >/dev/null 2>&1
-	if [ $? -eq 0 ]
-		then
-			echo -e "${GREENCOLOR}OK!${COLOROFF}\n"
-		else
-			echo -e "${REDCOLOR}ERROR!\nCan not clean files $MC_GMAP_PATH/$GENERATOR_DIR/blocks-*!${COLOROFF}\n"
-			exit 1
-	fi
-}
-
-homesTmp () {
-
-	echo -e "Homes generation temporary disabled."
-
-}
-
-#
-# Players's homes on webmap
-#
-homes () {
-	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n"
-	echo -e "Rendering players's homes on webmap...\n"
-
-	HOMES_CONF_ERROR=0
-
-	# Check if homes path is correct by checking if there is a file with server's admin name
-	# (I choose server's admin name because it should be, obviously at least, present...but you can provide anyone else)
-	if [ -f $HOMES_DIR/$SERVER_ADMIN.yml ]
-		then
-			echo -e "> Path to players's homes: ${GREENCOLOR}OK${COLOROFF}"
-		else
-			echo -e "> Path to players's homes: ${REDCOLOR}ERROR\nThe path to players's homes ($HOMES_DIR) is not valid!${COLOROFF}"
-			HOMES_CONF_ERROR=1
-	fi
-
-	# Check if homes.js is present, if not create one
-	if [ -f $WEB_PATH/homes.js ]
-		then
-			echo -e "> File with players's homes exist: ${GREENCOLOR}OK${COLOROFF}\n"
-		else
-			echo -e "${LILACOLOR}File with players's homes does not exist, creating $WEB_PATH/homes.js...${COLOROFF}"
-			touch $WEB_PATH/homes.js
-			if [ $? -eq 0 ]
-                               then
-                                       echo -e "${GREENCOLOR}OK${COLOROFF}\n"
-                               else
-                                       echo -e "${REDCOLOR}ERROR!\nCan not create players's homes file ($WEB_PATH/homes.js)! Wrong permissions ?${COLOROFF}\n"
-                                       HOMES_CONF_ERROR=1
-                        fi
-	fi
-	# If there is one fatal error, exit this script
-	if [ $HOMES_CONF_ERROR != 0 ]
-		then
-			exit 1
-	fi
-
-	# Now we can scan folder with homes and format data for webmap
-	HOMES_ERROR=0
-	# We write the var in homes.js that will handle all homes data
-	echo "var homeData=[" > $WEB_PATH/homes.js
-	if [ $? != 0 ]
-		then
-			HOMES_ERROR=1
-	fi
-	# Going in homes folder then loop between each file to collect data
-	cd $HOMES_DIR
-	shopt -s nullglob
-	for file in *.yml
-	do
-		if [ -s $file ]
-		then
-			HOME_NICK_MARKER=0
-			HOME_MC_ACCOUNT_NAME="${file%.*}"
-			while read line
-			do
-				if [[ $line == home:* ]]
-				then
-					HOME_COORDS="${line//[home: \[\]]/}"
-					HOME_COORD_X=`echo $HOME_COORDS | awk 'BEGIN {FS=","} {print $1}'`
-					HOME_COORD_Y=`echo $HOME_COORDS | awk 'BEGIN {FS=","} {print $2}'`
-					HOME_COORD_Z=`echo $HOME_COORDS | awk 'BEGIN {FS=","} {print $3}'`
-				fi
-				# If we found a nickname, we gather it too
-				if [[ $line == nickname:* ]]
-				then
-					HOME_NICKNAME=`echo $line | awk 'BEGIN {FS=" "} {print $2}'`
-					HOME_NICK_MARKER=1
-				fi
-			done < $file
-			if [ $HOME_NICK_MARKER != 0 ]
-			then
-				echo "{\"type\": \"home\", \"msg\": \"$HOME_NICKNAME ($HOME_MC_ACCOUNT_NAME)\", \"x\": $HOME_COORD_X, \"y\": $HOME_COORD_Y, \"z\": $HOME_COORD_Z}," >> $WEB_PATH/homes.js
-			else
-				echo "{\"type\": \"home\", \"msg\": \"$HOME_MC_ACCOUNT_NAME\", \"x\": $HOME_COORD_X, \"y\": $HOME_COORD_Y, \"z\": $HOME_COORD_Z}," >> $WEB_PATH/homes.js
-			fi
-		fi
-	done
-	if [ $? != 0 ]
-		then
-			HOMES_ERROR=1
-	fi
-	# Closing var
-	echo "]" >> $WEB_PATH/homes.js
-	if [ $? != 0 ]
-		then
-			HOMES_ERROR=1
-	fi
-	if [ $HOMES_ERROR != 0 ]
-		then
-			echo -e "${REDCOLOR}ERROR!\nHomes generation failed!${COLOROFF}\n"
-		else
-			echo -e "${GREENCOLOR}OK!\nHomes generation on webmap is over!${COLOROFF}\n"
-	fi
 }
 
 #
@@ -502,19 +291,9 @@ case "$1" in
 	fi
 	exit 0
 	;;
-
-	clean)
-	clean
-	exit 0
-	;;
-
-	homes)
-	homesTmp
-	exit 0
-	;;
-
+	
 	*)
-	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n\nHow to use: bash mc_gmap.sh [start|check|clean|homes] [map (optional)] \n\nstart - generate all maps (or the one specified)\ncheck - check all config files (or the one specified)\nclean - clean pigmap's textures cache\nhomes - print players's homes on all maps (or on the one specified)\n\nExamples:\nbash mc_gmap.sh check - will loop through conf directory to check all files\nbash mc_gmap.sh start myawesomemap - will render only the map specified in myawesomemap.conf\n"
+	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n\nHow to use: bash mc_gmap.sh [start|check] [map (optional)] \n\nstart - generate all maps (or the one specified)\ncheck - check all config files (or the one specified)\n\nExamples:\nbash mc_gmap.sh check - will loop through conf directory to check all files\nbash mc_gmap.sh start myawesomemap - will render only the map specified in myawesomemap.conf\n"
 	exit 1
 	;;
 esac
