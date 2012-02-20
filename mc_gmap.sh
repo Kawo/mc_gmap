@@ -21,6 +21,7 @@
 
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 MC_GMAP_PATH=/path/to/mc_gmap-1.4.1          # path to this script
 WORLD_PATH=/path/to/minecraft/world          # path to the world folder
 WEB_PATH=/path/to/web/folder                 # path where the map will be rendered
@@ -31,6 +32,10 @@ HOMES_DIR=/path/to/folder/with/players/homes # path to where Essentials store pl
 SERVER_ADMIN=                                # the MINECRAFT ACCOUNT of the server's admin (just if you plan to show players's homes on map)
 #
 # CONFIG END HERE
+=======
+# CONFIG IS NOW IN SEPARATE FILE
+# see conf directory
+>>>>>>> v1.5-dev
 =======
 # CONFIG IS NOW IN SEPARATE FILE
 # see conf directory
@@ -46,9 +51,14 @@ SERVER_ADMIN=                                # the MINECRAFT ACCOUNT of the serv
 # Global variables
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 PIGMAP_B=6
 PIGMAP_T=1
 MC_GMAP_VERSION=1.4.1
+=======
+MC_GMAP_PATH="$(cd "$(dirname "$0")" && pwd)"
+MC_GMAP_VERSION=1.5beta1
+>>>>>>> v1.5-dev
 =======
 MC_GMAP_PATH="$(cd "$(dirname "$0")" && pwd)"
 MC_GMAP_VERSION=1.5beta1

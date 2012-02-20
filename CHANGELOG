@@ -1,8 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 1.4.1 (01/07/2012)
 
 + Updated pigmap to support Minecraft 1.0 blocks
 =======
+=======
+>>>>>>> v1.5-dev
 1.5beta1 (01/09/2012)
 
 + Pigmap updated to support Minecraft 1.0.blocks
@@ -15,6 +18,9 @@
 1.4.1 (01/07/2012)
 
 + Pigmap updated to support Minecraft 1.0 blocks
+<<<<<<< HEAD
+>>>>>>> v1.5-dev
+=======
 >>>>>>> v1.5-dev
 
 

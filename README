@@ -11,6 +11,7 @@ For full install instructions, read https://github.com/kawo/mc_gmap/wiki/Full-In
 ------
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 Project News
 
@@ -24,6 +25,8 @@ Project News
 * Homes generation temporary disabled
 
 =======
+=======
+>>>>>>> v1.5-dev
 
 Current functionalities for 1.5beta1:
 
@@ -45,6 +48,11 @@ Planned functionalities (not necessarily for final 1.5) :
 
 ------
 
+<<<<<<< HEAD
+=======
+
+QUICK INSTALLATION GUIDE
+>>>>>>> v1.5-dev
 
 QUICK INSTALLATION GUIDE
 >>>>>>> v1.5-dev
@@ -59,9 +67,12 @@ QUICK INSTALLATION GUIDE
 - To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so 
 ("aptitude install build-essential libpng12-dev" for Debian-like)
 - For PNG to JPG convert, ImageMagick is required ("aptitude install imagemagick" for Debian-like)
+<<<<<<< HEAD
 >>>>>>> v1.5-dev
 
 (06/21/2011)
+=======
+>>>>>>> v1.5-dev
 
 + added v1.5-dev branch (this is WIP, do not use in prod atm)
 
@@ -69,8 +80,14 @@ QUICK INSTALLATION GUIDE
 <<<<<<< HEAD
 (06/18/2011)
 
+<<<<<<< HEAD
 + 1.4 released on GitHub
 
+=======
+1. Create a config file for each map using example.conf in conf directory.
+2. Launch the script: bash mc_gmap.sh to show commands that are available.
+
+>>>>>>> v1.5-dev
 =======
 1. Create a config file for each map using example.conf in conf directory.
 2. Launch the script: bash mc_gmap.sh to show commands that are available.
@@ -80,6 +97,7 @@ QUICK INSTALLATION GUIDE
 ------
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 Current functionalities:
 
@@ -105,6 +123,8 @@ render on webmap and another who will be a Bukkit plugin that gather players pos
 ------
 
 
+=======
+>>>>>>> v1.5-dev
 =======
 >>>>>>> v1.5-dev
 CREDITS
