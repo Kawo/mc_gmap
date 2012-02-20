@@ -10,11 +10,17 @@ For full install instructions, read https://github.com/kawo/mc_gmap/wiki/Full-In
 
 ------
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
 Project News
 
+(02/20/2012)
+
+After one month of testing, 1.5-dev branch is now merged to master.
+Still little things to do for a "final" tag, but it is fully functional atm.
+
+Another news, 1.6 branch will be created soon. I will try to port mc_gmap to Overviewer engine...in fact, it
+was the first engine that this script has used back in november/december 2010, but as the world of my server expanded,
+it was to slow to render and pigmap was 400% faster.
+The "new" Overviewer seems kickass now : faster, smooth lighting, night lighting, very flexible.
 
 (01/09/2012)
 
@@ -24,21 +30,20 @@ Project News
 + Code optimization
 * Homes generation temporary disabled
 
-=======
-=======
->>>>>>> v1.5-dev
 
-Current functionalities for 1.5beta1:
+------
+
+Current functionalities for 1.5:
 
 - Full or incremental render with Pigmap
 - JPG support for faster webmap loading (require ImageMagick package)
 - Multi maps support (config files are independents)
 - Very flexible: you can control each map or whole at once, as you want
 
-Note: homes generation is temporary disabled for beta1.
+Note: homes generation is temporary disabled.
 
 
-Planned functionalities (not necessarily for final 1.5) :
+Planned functionalities :
 
 - More code optimization
 - Add "force-jpg" and "force-full-render" option for command line
@@ -48,85 +53,19 @@ Planned functionalities (not necessarily for final 1.5) :
 
 ------
 
-<<<<<<< HEAD
-=======
-
 QUICK INSTALLATION GUIDE
->>>>>>> v1.5-dev
 
-QUICK INSTALLATION GUIDE
->>>>>>> v1.5-dev
 
-(01/07/2012)
-
-1.4.1 released
-+ Pigmap updated to support Minecraft 1.0 blocks
-
-<<<<<<< HEAD
-=======
 - To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so 
 ("aptitude install build-essential libpng12-dev" for Debian-like)
 - For PNG to JPG convert, ImageMagick is required ("aptitude install imagemagick" for Debian-like)
-<<<<<<< HEAD
->>>>>>> v1.5-dev
 
-(06/21/2011)
-=======
->>>>>>> v1.5-dev
-
-+ added v1.5-dev branch (this is WIP, do not use in prod atm)
-
-
-<<<<<<< HEAD
-(06/18/2011)
-
-<<<<<<< HEAD
-+ 1.4 released on GitHub
-
-=======
 1. Create a config file for each map using example.conf in conf directory.
 2. Launch the script: bash mc_gmap.sh to show commands that are available.
-
->>>>>>> v1.5-dev
-=======
-1. Create a config file for each map using example.conf in conf directory.
-2. Launch the script: bash mc_gmap.sh to show commands that are available.
-
->>>>>>> v1.5-dev
-
-------
-
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-Current functionalities:
-
-- Full or incremental render with Pigmap
-- JPG support for faster webmap loading (require ImageMagick package)
-- Players's homes printing on webmap (require Essentials for Bukkit)
-- Easy to use: just configure one time and then only call the script with "start" arg (you 
-can then make beautiful cron job)
-
-
-Planned functionalities:
-
-- Code optimization (some parts looks crap I know) (wip in v1.5-dev)
-- Add "force-jpg" and "force-full-render" option for command line (wip in v1.5-dev)
-- Make config file independent so you not have to rewrite it each time this script is updated (wip in v1.5-dev)
-- Better MultiVerse support (instead of copying this script for each map) (wip in v1.5-dev)
-- Show realtime players's pos on webmap (this will be in two parts: one in this script to 
-render on webmap and another who will be a Bukkit plugin that gather players pos)
-- Logging function?
-- Make a nice interface for the webmap!
 
 
 ------
 
-
-=======
->>>>>>> v1.5-dev
-=======
->>>>>>> v1.5-dev
 CREDITS
 
 Pigmap is developed by Michael J. "equalpants" Nelson (https://github.com/equalpants/pigmap)
