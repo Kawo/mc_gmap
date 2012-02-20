@@ -10,6 +10,7 @@ For full install instructions, read https://github.com/kawo/mc_gmap/wiki/Full-In
 
 ------
 
+<<<<<<< HEAD
 
 Project News
 
@@ -22,26 +23,64 @@ Project News
 + Code optimization
 * Homes generation temporary disabled
 
+=======
+
+Current functionalities for 1.5beta1:
+
+- Full or incremental render with Pigmap
+- JPG support for faster webmap loading (require ImageMagick package)
+- Multi maps support (config files are independents)
+- Very flexible: you can control each map or whole at once, as you want
+
+Note: homes generation is temporary disabled for beta1.
+
+
+Planned functionalities (not necessarily for final 1.5) :
+
+- More code optimization
+- Add "force-jpg" and "force-full-render" option for command line
+- Show realtime players's pos on webmap
+- Make a nice interface for the webmap!
+
+
+------
+
+
+QUICK INSTALLATION GUIDE
+>>>>>>> v1.5-dev
 
 (01/07/2012)
 
 1.4.1 released
 + Pigmap updated to support Minecraft 1.0 blocks
 
+<<<<<<< HEAD
+=======
+- To compile pigmap you will need standard dev tools like make, g++, zlib, libpng or so 
+("aptitude install build-essential libpng12-dev" for Debian-like)
+- For PNG to JPG convert, ImageMagick is required ("aptitude install imagemagick" for Debian-like)
+>>>>>>> v1.5-dev
 
 (06/21/2011)
 
 + added v1.5-dev branch (this is WIP, do not use in prod atm)
 
 
+<<<<<<< HEAD
 (06/18/2011)
 
 + 1.4 released on GitHub
 
+=======
+1. Create a config file for each map using example.conf in conf directory.
+2. Launch the script: bash mc_gmap.sh to show commands that are available.
+
+>>>>>>> v1.5-dev
 
 ------
 
 
+<<<<<<< HEAD
 Current functionalities:
 
 - Full or incremental render with Pigmap
@@ -66,6 +105,8 @@ render on webmap and another who will be a Bukkit plugin that gather players pos
 ------
 
 
+=======
+>>>>>>> v1.5-dev
 CREDITS
 
 Pigmap is developed by Michael J. "equalpants" Nelson (https://github.com/equalpants/pigmap)
