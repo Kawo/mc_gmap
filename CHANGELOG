@@ -1,3 +1,12 @@
+2.0beta2 (02/21/2012)
+
++ Little tweak to show the true North direction
++ Tiles are now in jpeg
++ Default zoom is now 4
++ forcerender arg added
++ Signs with [ ] are now hidden on the map (to prevent visual flood and cheat with advanced redstone circuits)
+
+
 2.0-dev (02/20/2012)
 
 * Coming back to Overviewer engine
