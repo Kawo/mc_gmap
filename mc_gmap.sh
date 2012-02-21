@@ -36,9 +36,10 @@
 #
 OVERVIEWER_EXEC="/usr/bin/overviewer.py"
 MC_GMAP_PATH="$(cd "$(dirname "$0")" && pwd)"
-MC_GMAP_VERSION=2.0beta1
+MC_GMAP_VERSION=2.0beta2
 ME=`whoami`
 MC_GMAP_ERROR=0
+FORCE_RENDER=0
 COLOROFF="\033[1;0m"
 BLUECOLOR="\033[1;36m"
 DARKBLUECOLOR="\033[1;34m"
@@ -178,11 +179,28 @@ checkWebPath () {
 }
 
 #
+# Function to extract biome colors
+#
+# Disabled atm. Not compatible with Minecraft 1.x
+# and will change with 1.2 "Anvil"
+#
+#biomeExtract () {
+#
+#	BIOMECOLOR="java -jar $MC_GMAP_PATH/addons/BiomeExtractor.jar -nogui $1"
+#
+#}
+
+#
 # Function to build command line
 #
 buildCmd () {
 
-	CMD="$OVERVIEWER_EXEC $1 $2"
+	if [ $FORCE_RENDER != 0 ]
+		then
+			CMD="$OVERVIEWER_EXEC $1 $2 --web-assets-path $MC_GMAP_PATH/web_assets --imgformat jpg --imgquality 90 --forcerender"
+		else
+			CMD="$OVERVIEWER_EXEC $1 $2 --web-assets-path $MC_GMAP_PATH/web_assets --imgformat jpg --imgquality 90"
+	fi
 
 	if [ -n "$3" ]
 		then
@@ -230,6 +248,15 @@ startRender () {
 		then
 			checkConfig "$1"
 			source $MC_GMAP_PATH/conf/$1.conf
+			#echo -e "\nTrying to extract biomes colors..."
+			#biomeExtract "$WORLD_PATH"
+			#$BIOMECOLOR
+			#if [ $? -eq 0 ]
+			#	then
+			#		echo -e "${GREENCOLOR}OK${COLOROFF}\n"
+			#	else
+			#		echo -e "${LILACOLOR}ERROR! I can not extract biomes colors, but it does not affect map rendering... ${COLOROFF}\n"
+			#fi
 			buildCmd "$WORLD_PATH" "$WEB_PATH" "$NORTH_DIRECTION" "$RENDER_MODES"
 			$CMD
 			if [ $? -eq 0 ]
@@ -252,6 +279,15 @@ startRender () {
 								then
 									echo -e "\nRendering [${file%.*}] map..."
 									source $file
+									#echo -e "\nTrying to extract biomes colors..."
+									#biomeExtract "$WORLD_PATH"
+									#$BIOMECOLOR
+									#if [ $? -eq 0 ]
+									#	then
+									#		echo -e "${GREENCOLOR}OK${COLOROFF}\n"
+									#	else
+									#		echo -e "${LILACOLOR}ERROR! I can not extract biomes colors, but it does not affect map rendering... ${COLOROFF}\n"
+									#fi
 									buildCmd "$WORLD_PATH" "$WEB_PATH" "$NORTH_DIRECTION" "$RENDER_MODES"
 									$CMD
 									if [ $? -eq 0 ]
@@ -292,8 +328,20 @@ case "$1" in
 	exit 0
 	;;
 	
+	forcerender)
+	if [ -n "$2" ]
+		then
+			FORCE_RENDER=1
+			startRender "$2"
+		else
+			FORCE_RENDER=1
+			startRender
+	fi
+	exit 0
+	;;
+	
 	*)
-	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n\nHow to use: bash mc_gmap.sh [start|check] [map (optional)] \n\nstart - generate all maps (or the one specified)\ncheck - check all config files (or the one specified)\n\nExamples:\nbash mc_gmap.sh check - will loop through conf directory to check all files\nbash mc_gmap.sh start myawesomemap - will render only the map specified in myawesomemap.conf\n"
+	echo -e "\n${DARKBLUECOLOR}- MC GoogleMap v$MC_GMAP_VERSION -${COLOROFF}\n\nHow to use: bash mc_gmap.sh [start|check] [map (optional)] \n\nstart - generate all maps (or the one specified)\ncheck - check all config files (or the one specified)\nforcerender - force render (bypass incremental update)\n\nExamples:\nbash mc_gmap.sh check - will loop through conf directory to check all files\nbash mc_gmap.sh start myawesomemap - will render only the map specified in myawesomemap.conf\n"
 	exit 1
 	;;
 esac
