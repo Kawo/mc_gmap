@@ -36,7 +36,7 @@
 #
 OVERVIEWER_EXEC="/usr/bin/overviewer.py"
 MC_GMAP_PATH="$(cd "$(dirname "$0")" && pwd)"
-MC_GMAP_VERSION=2.0beta2
+MC_GMAP_VERSION=2.0beta3
 ME=`whoami`
 MC_GMAP_ERROR=0
 FORCE_RENDER=0
@@ -197,9 +197,9 @@ buildCmd () {
 
 	if [ $FORCE_RENDER != 0 ]
 		then
-			CMD="$OVERVIEWER_EXEC $1 $2 --web-assets-path $MC_GMAP_PATH/web_assets --imgformat jpg --imgquality 90 --forcerender"
+			CMD="$OVERVIEWER_EXEC $1 $2 --imgformat jpg --imgquality 90 --forcerender"
 		else
-			CMD="$OVERVIEWER_EXEC $1 $2 --web-assets-path $MC_GMAP_PATH/web_assets --imgformat jpg --imgquality 90"
+			CMD="$OVERVIEWER_EXEC $1 $2 --imgformat jpg --imgquality 90"
 	fi
 
 	if [ -n "$3" ]
